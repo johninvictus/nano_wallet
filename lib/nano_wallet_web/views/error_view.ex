@@ -9,7 +9,7 @@ defmodule NanoWalletWeb.ErrorView do
     "Internal server error"
   end
 
-  def render("error.json", message: message) do
+  def render("error.json", %{message: message}) do
     %{
       error: %{
         message: message
