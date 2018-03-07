@@ -60,4 +60,4 @@ config :nano_wallet, NanoWallet.Repo,
   config :nano_wallet, NanoWallet.Guardian,
   issuer: "nano_wallet",
   ttl: {30, :days},
-  secret_key: "LG17BzmhBeq81Yyyn6vH7GVdrCkQpLktol2vdXlBzkRRHpYsZwluKMG9r6fnu90m"
+  secret_key: "u12K3mKWJedv+O2cL2PlQCld9MnniJ7GlvFKnVHDZpRo8RNKt4QS0JR4moxPfXFG"

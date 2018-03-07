@@ -1,5 +1,5 @@
 defmodule NanoWallet.Guardian do
-  use Guardian, otp_app: :kooba_server
+  use Guardian, otp_app: :nano_wallet
 
   alias NanoWallet.Accounts
 

@@ -2,9 +2,11 @@ defmodule NanoWallet.Accounts do
   @moduledoc """
   The Accounts context.
   """
+  defstruct [user: nil, token: nil]
 
   import Ecto.Query, warn: false
   alias NanoWallet.Repo
+  alias NanoWallet.Guardian
 
   alias NanoWallet.Accounts.User
 
@@ -51,8 +53,22 @@ defmodule NanoWallet.Accounts do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+
+  def register_user(attrs) do
+    case create_user(attrs) do
+      {:ok, user} ->
+
+       {:ok, token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: :access)
+
+       {:ok, %__MODULE__{user: user, token: token}}
+
+       {:error, changeset} ->
+         {:error, changeset}
+    end
   end
 
   @doc """
@@ -101,4 +117,9 @@ defmodule NanoWallet.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def changeset_register(%User{} = user) do
+    User.registration_changeset(user, Map.new)
+  end
+
 end

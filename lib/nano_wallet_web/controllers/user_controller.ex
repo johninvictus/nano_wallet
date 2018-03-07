@@ -3,6 +3,7 @@ defmodule NanoWalletWeb.UserController do
 
   alias NanoWallet.Accounts
   alias NanoWallet.Accounts.User
+  alias NanoWalletWeb.SessionView
 
   action_fallback NanoWalletWeb.FallbackController
 
@@ -12,11 +13,11 @@ defmodule NanoWalletWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+    with {:ok, %Accounts{} = accounts} <- Accounts.register_user(user_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> put_resp_header("location", user_path(conn, :show, accounts.user))
+      |> render(SessionView, "show.json", accounts)
     end
   end
 

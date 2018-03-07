@@ -13,7 +13,6 @@ defmodule NanoWalletWeb.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       username: user.username,
-      email: user.email,
-      auth_account_id: user.auth_account_id}
+      email: user.email}
   end
 end

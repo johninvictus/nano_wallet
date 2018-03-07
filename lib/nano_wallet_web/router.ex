@@ -26,6 +26,12 @@ defmodule NanoWalletWeb.Router do
   scope "/api", NanoWalletWeb do
     pipe_through :api
 
+    post "/sessions/register", UserController, :create
+  end
+
+  scope "/api", NanoWalletWeb do
+    pipe_through [:api, :api_auth]
+
     resources "/users", UserController, except: [:new, :edit]
   end
 
