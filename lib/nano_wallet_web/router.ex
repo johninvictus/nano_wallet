@@ -19,6 +19,12 @@ defmodule NanoWalletWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/api", NanoWalletWeb do
+    pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", NanoWalletWeb do
   #   pipe_through :api
