@@ -1,6 +1,10 @@
 defmodule NanoWalletWeb.Router do
   use NanoWalletWeb, :router
 
+  pipeline :api_auth do
+    plug(NanoWallet.Guardian.AuthPipeline)
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session

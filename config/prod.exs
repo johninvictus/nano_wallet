@@ -21,6 +21,12 @@ config :nano_wallet, NanoWalletWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+
+config :nano_wallet, NanoWallet.Guardian,
+  issuer: "nano_wallet",
+  ttl: {30, :days},
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

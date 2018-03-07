@@ -56,3 +56,8 @@ config :nano_wallet, NanoWallet.Repo,
   database: "nano_wallet_dev",
   hostname: "localhost",
   pool_size: 10
+
+  config :nano_wallet, NanoWallet.Guardian,
+  issuer: "nano_wallet",
+  ttl: {30, :days},
+  secret_key: "LG17BzmhBeq81Yyyn6vH7GVdrCkQpLktol2vdXlBzkRRHpYsZwluKMG9r6fnu90m"
