@@ -17,4 +17,16 @@ defmodule NanoWalletWeb.FallbackController do
     |> put_status(:not_found)
     |> render(NanoWalletWeb.ErrorView, :"404")
   end
+
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> render(NanoWalletWeb.ErrorView, "error.json", message: "Wrong password!")
+  end
+
+  def call(conn, {:error, :user_not_found}) do
+    conn
+    |> put_status(:unauthorized)
+    |> render(NanoWalletWeb.ErrorView, "error.json", message: "No user with the specified email!")
+  end
 end

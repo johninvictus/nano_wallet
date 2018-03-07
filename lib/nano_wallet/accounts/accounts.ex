@@ -2,9 +2,10 @@ defmodule NanoWallet.Accounts do
   @moduledoc """
   The Accounts context.
   """
-  defstruct [user: nil, token: nil]
+  defstruct user: nil, token: nil
 
   import Ecto.Query, warn: false
+  import Comeonin.Argon2, only: [checkpw: 2, dummy_checkpw: 0]
   alias NanoWallet.Repo
   alias NanoWallet.Guardian
 
@@ -39,6 +40,8 @@ defmodule NanoWallet.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+
   @doc """
   Creates a user.
 
@@ -57,17 +60,43 @@ defmodule NanoWallet.Accounts do
     |> Repo.insert()
   end
 
+  @doc """
+  Will register a user after a user is provided
 
+  iex> register_user(%{correct values}) # when attrs are Map.new
+  {:ok, account}
+
+  iex> register_user(%{bad values})
+
+  {:error, changeset}
+  """
   def register_user(attrs) do
     case create_user(attrs) do
       {:ok, user} ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: :access)
 
-       {:ok, token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: :access)
+        {:ok, %__MODULE__{user: user, token: token}}
 
-       {:ok, %__MODULE__{user: user, token: token}}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
 
-       {:error, changeset} ->
-         {:error, changeset}
+  def authenticate_user(%{"email" => mail, "password" => password}) do
+    user = get_user_by_email(mail)
+
+    cond do
+      user && checkpw(password, user.password_hash) ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: :access)
+
+        {:ok, %__MODULE__{user: user, token: token}}
+
+      user ->
+        {:error, :unauthorized}
+
+      true ->
+        dummy_checkpw()
+        {:error, :user_not_found}
     end
   end
 
@@ -119,7 +148,6 @@ defmodule NanoWallet.Accounts do
   end
 
   def changeset_register(%User{} = user) do
-    User.registration_changeset(user, Map.new)
+    User.registration_changeset(user, Map.new())
   end
-
 end
