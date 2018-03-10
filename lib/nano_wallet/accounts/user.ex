@@ -2,13 +2,16 @@ defmodule NanoWallet.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias NanoWallet.Accounts.User
+  alias NanoWallet.Wallet.WalletAccount
 
   schema "users" do
+    field(:email, :string)
+    field(:username, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
 
-    field :email, :string
-    field :username, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
+    has_many(:wallets, WalletAccount)
 
     timestamps()
   end
@@ -35,10 +38,13 @@ defmodule NanoWallet.Accounts.User do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
         put_change(changeset, :password_hash, Comeonin.Argon2.hashpwsalt(password))
 
-        _->
+      _ ->
         changeset
     end
   end
 
-
+  def build(%{"username" => username} = params) do
+    registration_changeset(%User{}, params)
+    |> put_assoc(:wallets, [WalletAccount.build_wallet("Wallet: #{username}")])
+  end
 end

@@ -3,11 +3,11 @@ defmodule NanoWallet.Repo.Migrations.CreateWalletAccounts do
 
   def change do
     create table(:wallet_accounts) do
-      add(:type, :string)
-      add(:name, :string)
-      add(:currency, :string)
+      add(:type, :string, null: false)
+      add(:name, :string, null: false)
+      add(:currency, :string, null: false)
 
-      add(:user_id, references(:users, on_delete: :nothing))
+      add(:user_id, references(:users, on_delete: :delete_all))
 
       timestamps()
     end

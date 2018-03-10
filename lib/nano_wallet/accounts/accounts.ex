@@ -55,9 +55,8 @@ defmodule NanoWallet.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
+    User.build(attrs)
+    |> Repo.insert!()
   end
 
   @doc """
@@ -72,13 +71,13 @@ defmodule NanoWallet.Accounts do
   """
   def register_user(attrs) do
     case create_user(attrs) do
-      {:ok, user} ->
+      {:error, changeset} ->
+        {:error, changeset}
+
+      user ->
         {:ok, token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: :access)
 
         {:ok, %__MODULE__{user: user, token: token}}
-
-      {:error, changeset} ->
-        {:error, changeset}
     end
   end
 

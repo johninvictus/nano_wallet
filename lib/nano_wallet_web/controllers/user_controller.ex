@@ -5,7 +5,7 @@ defmodule NanoWalletWeb.UserController do
   alias NanoWallet.Accounts.User
   alias NanoWalletWeb.SessionView
 
-  action_fallback NanoWalletWeb.FallbackController
+  action_fallback(NanoWalletWeb.FallbackController)
 
   def index(conn, _params) do
     users = Accounts.list_users()
@@ -36,6 +36,7 @@ defmodule NanoWalletWeb.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
+
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end
