@@ -60,6 +60,10 @@ defmodule NanoWallet.Wallet.Ledger do
     end
   end
 
+  def entries(%WalletAccount{id: id}) do
+    Repo.all(from(t in WalletEntry, where: t.account_id == ^id))
+  end
+
   defp insert(entries) do
     entries =
       Enum.map(entries, fn tuple ->

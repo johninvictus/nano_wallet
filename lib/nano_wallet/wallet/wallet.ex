@@ -9,6 +9,8 @@ defmodule NanoWallet.Wallet do
   alias NanoWallet.Wallet.WalletAccount
   alias NanoWallet.Wallet.Deposit
   alias NanoWallet.Wallet.Ledger
+  alias NanoWallet.Wallet.Transfer
+  alias NanoWallet.Accounts.User
 
   @doc """
   Returns the list of wallet_accounts.
@@ -206,5 +208,17 @@ defmodule NanoWallet.Wallet do
       |> Ledger.write()
 
     result
+  end
+
+  def balance(%User{wallets: wallet}), do: Ledger.balance(wallet)
+
+  def transactions(%User{wallets: wallet}), do: Ledger.entries(wallet)
+
+  def build_transfer(customer) do
+    Transfer.changeset(customer, %Transfer{})
+  end
+
+  def create_transfer(customer, params) do
+    Transfer.create(customer, params)
   end
 end
