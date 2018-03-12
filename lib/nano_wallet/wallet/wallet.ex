@@ -7,6 +7,8 @@ defmodule NanoWallet.Wallet do
   alias NanoWallet.Repo
 
   alias NanoWallet.Wallet.WalletAccount
+  alias NanoWallet.Wallet.Deposit
+  alias NanoWallet.Wallet.Ledger
 
   @doc """
   Returns the list of wallet_accounts.
@@ -100,9 +102,6 @@ defmodule NanoWallet.Wallet do
   """
   def change_wallet_account(%WalletAccount{} = wallet_account) do
     WalletAccount.changeset(wallet_account, %{})
-  end
-
-  def create_deposit(account, amount) do
   end
 
   alias NanoWallet.Wallet.WalletEntry
@@ -199,5 +198,13 @@ defmodule NanoWallet.Wallet do
   """
   def change_wallet_entry(%WalletEntry{} = wallet_entry) do
     WalletEntry.changeset(wallet_entry, %{})
+  end
+
+  def create_deposit!(account, amount) do
+    {:ok, result} =
+      Deposit.build(account, amount)
+      |> Ledger.write()
+
+    result
   end
 end

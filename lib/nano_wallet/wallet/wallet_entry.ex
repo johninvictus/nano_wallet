@@ -1,13 +1,14 @@
 defmodule NanoWallet.Wallet.WalletEntry do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use NanoWallet.Wallet.Model
 
+  @entry_types [:credit, :debit]
 
   schema "wallet_entries" do
-    field :amount, :string
+    field :amount, Money.Ecto
     field :description, :string
     field :type, :string
-    field :account_id, :id
+
+    belongs_to(:account, WalletAccount)
 
     timestamps()
   end
@@ -17,5 +18,15 @@ defmodule NanoWallet.Wallet.WalletEntry do
     wallet_entry
     |> cast(attrs, [:type, :description, :amount])
     |> validate_required([:type, :description, :amount])
+  end
+
+  def from_tuple({type, %WalletAccount{} = account, description, %Money{} = amount})
+  when type in @entry_types and is_binary(description) do
+    %WalletEntry{
+      type: Atom.to_string(type),
+      account: account,
+      description: description,
+      amount: amount
+    }
   end
 end

@@ -7,7 +7,12 @@ defmodule NanoWallet.Wallet.Model do
 
       alias NanoWallet.{
         Wallet.Deposit,
-        Accounts.User
+        Accounts.User,
+        Money,
+        Wallet.Ledger,
+        Wallet.WalletAccount,
+        Wallet.WalletEntry,
+        Repo
       }
     end
   end
